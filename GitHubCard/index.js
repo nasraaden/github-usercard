@@ -3,6 +3,16 @@
            https://api.github.com/users/<your name>
 */
 
+const container = document.querySelector('.cards');
+
+axios.get('https://api.github.com/users/nasraaden')
+.then(response => {
+  createCard(response);
+  })
+.catch(error => {
+  console.log('User not found', error);
+});
+
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
    data in order to use it to build your component function 
@@ -24,7 +34,24 @@
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = ['ethyl2', 'web25Lucius', 'phil-mac','RobertDGordon','GeorgeRaymond98'];
+
+
+followersArray.forEach(follower => { 
+  axios.get(`https://api.github.com/users/${follower}`)
+  .then(response => {
+    createCard(response);
+  })
+  .catch(error => {
+    console.log('User not found',error);
+  });
+})
+
+
+
+
+
+
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
@@ -45,6 +72,52 @@ const followersArray = [];
 </div>
 
 */
+
+function createCard(object){
+  
+  const card = document.createElement('div');
+  const cardImage = document.createElement('img');
+  const cardInfo = document.createElement('div');
+  const name = document.createElement('h3');
+  const username = document.createElement('p');
+  const location = document.createElement('p');
+  const followers = document.createElement('p');
+  const following = document.createElement('p');
+  const bio = document.createElement('p')
+  const profile = document.createElement('p');
+  const profileLink = document.createElement('a')
+  
+  card.classList.add('card');
+  cardInfo.classList.add('card-info');
+  name.classList.add('name');
+  username.classList.add('username');  
+
+  name.textContent = object.data.name;
+  cardImage.src = object.data.avatar_url;
+  username.textContent = object.data.login;
+  location.textContent = `Location: ${object.data.location}`;
+  profileLink.setAttribute("href", object.data.html_url);
+  profileLink.textContent = object.data.html_url;
+  profile.textContent = 'Profile: '; 
+  followers.textContent = `Followers: ${object.data.followers}`;
+  following.textContent = `Following: ${object.data.following}`;
+  bio.textContent = `Bio: ${object.data.bio}`; 
+
+
+  cardInfo.appendChild(name);
+  card.appendChild(cardImage);
+  card.appendChild(cardInfo);
+  cardInfo.appendChild(username);
+  cardInfo.appendChild(location);
+  cardInfo.appendChild(followers);
+  cardInfo.appendChild(following);
+  cardInfo.appendChild(bio);
+  container.appendChild(card);
+  cardInfo.appendChild(profile);
+  profile.appendChild(profileLink);
+
+  return card;
+}
 
 /* List of LS Instructors Github username's: 
   tetondan
